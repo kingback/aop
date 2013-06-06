@@ -1,0 +1,13 @@
+{
+    "name": "aop",
+    "version": "1.0",
+    "desc": "AOP功能，提供before与after的代码注入API",
+    "cover": "",
+    "author": {
+        "name": "虎牙",
+        "email": "ningzbruc@gmail.com",
+        "page": "https://github.com/kingback"
+    },
+    "type": "kissy-pie",
+    "type-url": "http://abc.alibaba-inc.com/r/kissy-pie"
+}
