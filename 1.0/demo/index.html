@@ -4,10 +4,15 @@
     <meta charset="utf-8"/>
     <title>demo标题</title>
     <script src="http://a.tbcdn.cn/s/kissy/1.3.0/kissy-min.js" charset="utf-8"></script>
+    <style>
+        .box {background:#ccc;}
+    </style>
 </head>
 <body>
 <h2>demo标题</h2>
-
+<div class="box"></div>
+<button id="show">show</button>
+<button id="hide">hide</button>
 <script>
     var S = KISSY;
     if (S.Config.debug) {
@@ -24,40 +29,69 @@
         });
     }
 
-    S.use('gallery/aop/1.0/', function (S, Do) {
-    	var obj = {
-    		
-    		one: function(msg) {
-    			console.log(msg);
-    			return 1;
-    		},
-    		
-    		two: function() {
-    			return 2;
-    		}
-    	};
-    	
-    	Do.before(function() {
-    		return new Do.AlterArgs('', ['alter']);
-    	}, obj, 'one', obj);
-    	
-    	Do.after(function() {
-    	    console.log(5);
-    		return new Do.AlterReturn('', 'alterReturn');
-    	}, obj, 'two', obj);
-    	
-    	var handle = Do.after(function() {
-    		console.log(4);
-    	}, obj, 'two', obj);
-    	
-    	//Do.detach(handle);
-    	
-    	obj.one(1);
-    	console.log(obj.two());
-    	
-    	//Do.detach(obj, 'one');
-    	//Do.detach(obj, 'one', 'after');
-    	//Do.detach(obj, 'one', 'before');
+    S.use('node,overlay,gallery/aop/1.0/', function (S, Node, Overlay, Do) {
+        
+        var PopupAnim = function() {
+            Do.after(this._initAnim, this, 'render', this);
+        };
+        PopupAnim.prototype = {
+            _initAnim: function() {
+                this._node = this.get('srcNode');
+                this._uiShow = this.show;
+                this._uiHide = this.hide;
+                Do.before(this._showAnim, this, 'show', this);
+                Do.before(this._hideAnim, this, 'hide', this);
+            },
+            _showAnim: function(anim) {
+                if (anim) {
+                    this._node.css({
+                        opacity: '0'
+                    });
+                    this._uiShow();
+                    this._node.animate({
+                        opacity: '1'
+                    }, 0.2, 'easeNone');
+                    
+                    // 阻止默认的show方法
+                    return new Do.Prevent();
+                }
+            },
+            _hideAnim: function(anim) {
+                var _this = this;
+                if (anim) {
+                    this._node.animate({
+                        opacity: '0'
+                    }, 0.2, 'easeNone', function() {
+                        _this._uiHide();
+                        _this._node.css({
+                            opacity: '1'
+                        });
+                    });
+                    
+                    // 阻止默认的hide方法
+                    return new Do.Prevent();
+                }
+            }
+        };
+        
+        var MyPopup = Overlay.Popup.extend([PopupAnim]);
+        
+        var popup = new MyPopup({
+            srcNode: S.one('.box'),
+            width: '200px',
+            height: '200px'
+        });
+        
+        popup.render();
+        popup.show();
+        
+        S.one('#show').on('click', function(e) {
+            popup.show(true); 
+        });
+        S.one('#hide').on('click', function(e) {
+            popup.hide(true);    
+        });
+        
     });
 </script>
 </body>
