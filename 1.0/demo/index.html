@@ -41,7 +41,7 @@
     		return new Do.AlterArgs('', ['alter']);
     	}, obj, 'one', obj);
     	
-    	Do.after(function() {
+    	Do.after(function(v) {
     	    console.log(5);
     		return new Do.AlterReturn('', 'alterReturn');
     	}, obj, 'two', obj);
