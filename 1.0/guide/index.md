@@ -4,11 +4,15 @@
 
 ## 简介
 
-> 提供before/after等AOP（面向切面编程）切面方法，更好地在不修改代码的情况下管理/解耦/侵入代码
+> 提供before/after等AOP（面向切面编程）切面方法，更好地在不修改代码的情况下管理/解耦/侵入代码，仿照YUI3的AOP
 
 ## 什么是AOP
 
-<p><a href="http://baike.baidu.com/view/73626.htm" target="_blank">百度百科</a> <a href="http://zh.wikipedia.org/wiki/AOP" target="_blank">维基百科</a></p>
+<p>
+    <a href="http://baike.baidu.com/view/73626.htm" target="_blank">百度百科</a>
+    <a href="http://zh.wikipedia.org/wiki/AOP" target="_blank">维基百科</a>
+    <a href="http://yuilibrary.com/yui/docs/api/classes/Do.html" target="_blank">YUI3 AOP<a>
+</p>
 
 ## 简单例子
 
@@ -93,6 +97,89 @@
     // or
     Do.detachBefore(math, 'add'); // 解除所有before绑定
     Do.detachAfter(math, 'add'); // 解除所有after绑定
+
+## 高级用法（扩展，插件）
+
+> 我们在做开发的时候，常常需要把一个大功能块解耦成几个独立的更小的功能块，KISSY提供了RichBase的基类，允许将功能通过扩展和插件的形式合并到一块，这个时候扩展或插件与主功能之间的联系，除了事件之外，还可以通过AOP的方法来进行切入
+
+<p>来看一下具体例子，怎么实现一个弹窗组件功能与扩展解耦：</p>
+    
+    // 基础功能
+    var PopupBase = RichBase.extend({
+        // 初始化函数，在初始化时会被执行 
+        initializer: function() {
+            // 缓存节点
+            this._node = this.get('node');
+        },
+        show: function() {
+            // 显示节点
+            this._node.css('display', 'block');
+        },
+        hide: function() {
+            // 隐藏节点
+            this._node.css('display', 'none');
+        },
+        close: function() {}
+        // 更多其他方法
+    }, {
+        ATTRS: {
+            node: function() {
+                setter: function(v) {
+                    return S.one(v);
+                }
+            }
+        }
+    });
+    
+    // 动画扩展
+    var PopupAnim = function() {
+        //跟在初始化函数后初始化相关动画逻辑
+        Do.after(this._initAnim, this, 'initializer', this);
+    };
+    PopupAnim.prototype = {
+        _initAnim: function() {
+            // 在show/hide之前执行动画
+            Do.before(this._showAnim, this, 'show', this);
+            Do.before(this._hideAnim, this, 'hide', this);
+        },
+        _showAnim: function(anim) {
+            if (anim) {
+                this._node.css({
+                    display: 'block',
+                    opacity: '0'
+                });
+                this._node.animate({
+                    opacity: '1'
+                }, 1, 'easeNone');
+                
+                // 阻止默认的show方法
+                return new Do.Prevent();
+            }
+        },
+        _hideAnim: function(anim) {
+            var _this = this;
+            if (anim) {
+                this._node.animate({
+                    opacity: '0'
+                }, 1, 'easeNone', function() {
+                    _this._node.css({
+                        display: 'none',
+                        opacity: '1'
+                    });
+                });
+                
+                // 阻止默认的hide方法
+                return new Do.Prevent();
+            }
+        }
+    };
+    
+    // 合并功能
+    var Popup = PopupBase.extend([PopupAnim]);
+    
+    var popup = new Popup({ node: '.box' });
+    popup.show(); // 直接显示
+    popup.hide(true); // 动画隐藏
 
 ## 常用方法
 <div class="method-list">
