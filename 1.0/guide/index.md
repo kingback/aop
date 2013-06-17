@@ -11,7 +11,7 @@
 <p>
     <a href="http://baike.baidu.com/view/73626.htm" target="_blank">百度百科</a>
     <a href="http://zh.wikipedia.org/wiki/AOP" target="_blank">维基百科</a>
-    <a href="http://yuilibrary.com/yui/docs/api/classes/Do.html" target="_blank">YUI3 AOP<a>
+    <a href="http://yuilibrary.com/yui/docs/api/classes/Do.html" target="_blank">YUI3 AOP</a>
 </p>
 
 ## 简单例子
