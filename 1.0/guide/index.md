@@ -46,20 +46,25 @@
 
 > 我们都知道在DOM或自定义事件里都有preventDefault,halt等事件处理方法，AOP也不例外，不仅如此，AOP还提供了修改传参和返回值等功能</p>
 
-<p>看一个简单的例子</p>    
+看一个简单的例子
+  
     var math = {
         add: function(a, b) {
             console.log(a + b);
         }
     };
-<p>阻止默认方法的执行 <code>Do.Prevent</code></p>
+    
+阻止默认方法的执行 <code>Do.Prevent</code>
+
     Do.before(function() {
         console.log('prevented');
         return new Do.Prevent();
     }, math, 'add');
     
     math.add(1, 2); // prevented
-<p>阻止后续回调及默认方法的执行 <code>Do.Halt</code></p>
+
+阻止后续回调及默认方法的执行 <code>Do.Halt</code>
+
     Do.before(function() {
         console.log('halt');
         return new Do.Halt();
@@ -72,19 +77,25 @@
     }, math, 'add');
     
     math.add(1, 2); // halt
-<p>修改传参 <code>Do.AlterArgs</code></p>
+
+修改传参 <code>Do.AlterArgs</code>
+
     Do.before(function() {
         return new Do.AlterArgs('msg', [a + 1, b + 1]);
     }, math, 'add');
     
     math.add(1, 2); // 5
-<p>修改返回值 <code>Do.AlterReturn</code></p>
+
+修改返回值 <code>Do.AlterReturn</code>
+
     Do.after(function() {
         return new Do.AlterReturn('msg', Do.originalRetVal + 10);
     }, math, 'add');
     
     math.add(1, 2); // 13
-<p>解除绑定</p>
+    
+解除绑定
+
     var handle = Do.before(fn, math, 'add');
     handle.detach(); // 解除当前回调绑定
     // or
