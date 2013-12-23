@@ -83,15 +83,10 @@ KISSY.add('gallery/aop/1.0/index',function(S) {
     
             o = obj[KSAOP] || (obj[KSAOP] = {});
     
-            if (!o[sFn]) {
+            if (!o[sFn] || o[sFn].wrapper !== obj[sFn]) {
                 
                 // 创建方法包装器
                 o[sFn] = new Do.Method(obj, sFn);
-    
-                // 包装后的方法覆盖对象的原始方法
-                obj[sFn] = function() {
-                    return o[sFn].exec.apply(o[sFn], arguments);
-                };
             }
     
             // 回调ID
@@ -177,11 +172,17 @@ KISSY.add('gallery/aop/1.0/index',function(S) {
      * @param {String} sFn 方法名
      */
     Do.Method = function(obj, sFn) {
+        var _this = this;
         this.obj = obj;
-        this.methodName = sFn;
-        this.method = obj[sFn];
         this.before = {};
         this.after = {};
+        this.methodName = sFn;
+        this.method = obj[sFn];
+        
+        // 包装后的方法覆盖对象的原始方法
+        this.wrapper = obj[sFn] = function() {
+            _this.exec.apply(_this, arguments);
+        };
     };
     
     /**
