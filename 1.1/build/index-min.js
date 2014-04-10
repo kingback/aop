@@ -1,0 +1,2 @@
+/*!build time : 2014-04-10 12:37:35 PM*/
+KISSY.add("gallery/aop/1.1/index",function(a,b,c){function d(a){var b=this;d.superclass.constructor.call(b,a)}b.all;return a.extend(d,c,{},{ATTRS:{}}),d},{requires:["node","base"]});
