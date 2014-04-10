@@ -1,13 +1,17 @@
 {
     "name": "aop",
-    "version": "1.0",
-    "desc": "AOP功能，提供before与after的代码注入API",
-    "cover": "",
+    "comName":"Aop",
+    "version": "1.1",
+    "desc": "",
+    "tag":"aop,kissy-mini,kissy-mini",
+    "githubName":"kingback",
     "author": {
         "name": "虎牙",
-        "email": "ningzbruc@gmail.com",
-        "page": "https://github.com/kingback"
+        "email": "huya.nzb@alibaba-inc.com",
+        "page": ""
     },
-    "type": "kissy-pie",
-    "type-url": "http://abc.alibaba-inc.com/r/kissy-pie"
+	"flexComboPort":"8081",
+	"reserveServerPort":"8080",
+    "type": "kissy-gallery",
+    "type-url": "http://gallery.kissyui.com/guide"
 }
