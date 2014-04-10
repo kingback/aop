@@ -2,21 +2,25 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Aop的demo</title>
+    <title>demo标题</title>
     <script src="http://g.tbcdn.cn/kissy/k/1.4.1/seed-min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="http://g.tbcdn.cn/kissy/k/1.3.0/css/dpl/base-min.css">
+    <style>
+        .ks-popup {background:#ccc;}
+        .ks-overlay-hidden {opacity:0;}
+    </style>
 </head>
 <body>
-<h2>Aop的demo</h2>
-
+<h2>demo标题</h2>
+<button id="show">show</button>
+<button id="hide">hide</button>
 <script>
     var S = KISSY;
     if (S.Config.debug) {
-        var srcPath = "../../";
+        var srcPath = "../../../";
         S.config({
             packages:[
                 {
-                    name:"gallery/aop",
+                    name:"gallery",
                     path:srcPath,
                     charset:"utf-8",
                     ignorePackageNameInUri:true
@@ -25,9 +29,68 @@
         });
     }
 
-    S.use('gallery/aop/1.1/index', function (S, Aop) {
-          new Aop();
-    })
+    S.use('node,overlay,gallery/aop/1.1/', function (S, Node, Overlay, Do) {
+        
+        var PopupAnim = function() {
+            Do.after(this._initAnim, this, 'render', this);
+        };
+        PopupAnim.prototype = {
+            _initAnim: function() {
+                this._node = this.get('el');
+                this._uiShow = this.show;
+                this._uiHide = this.hide;
+                Do.before(this._showAnim, this, 'show', this);
+                Do.before(this._hideAnim, this, 'hide', this);
+            },
+            _showAnim: function(anim) {
+                if (anim && !this.get('visible')) {
+                    this._node.css({
+                        opacity: '0'
+                    });
+                    this._uiShow();
+                    this._node.animate({
+                        opacity: '1'
+                    }, 0.1, 'easeNone');
+                    
+                    // 阻止默认的show方法
+                    return new Do.Prevent();
+                }
+            },
+            _hideAnim: function(anim) {
+                var _this = this;
+                if (anim && this.get('visible')) {
+                    this._node.animate({
+                        opacity: '0'
+                    }, 0.1, 'easeNone', function() {
+                        _this._uiHide();
+                    });
+                    
+                    // 阻止默认的hide方法
+                    return new Do.Prevent();
+                }
+            }
+        };
+        
+        var MyPopup = Overlay.Popup.extend([PopupAnim]);
+        
+        var popup = new MyPopup({
+            content: '<div class="box"></div>',
+            width: 200,
+            height: 200,
+            visible: true
+        });
+        
+        popup.render();
+        popup.show();
+        
+        S.one('#show').on('click', function(e) {
+            popup.show(true); 
+        });
+        S.one('#hide').on('click', function(e) {
+            popup.hide(true);    
+        });
+        
+    });
 </script>
 </body>
 </html>
