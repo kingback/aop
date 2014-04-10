@@ -2,13 +2,13 @@
     "name": "aop",
     "comName":"Aop",
     "version": "1.1",
-    "desc": "",
-    "tag":"aop,kissy-mini,kissy-mini",
+    "desc": "AOP切面编程，提供before和after无缝代码注入功能",
+    "tag":"aop,kissy-mini",
     "githubName":"kingback",
     "author": {
         "name": "虎牙",
         "email": "huya.nzb@alibaba-inc.com",
-        "page": ""
+        "page": "http://github.com/kingback/"
     },
 	"flexComboPort":"8081",
 	"reserveServerPort":"8080",
