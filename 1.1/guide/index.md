@@ -17,7 +17,7 @@
 
 ## 简单例子
 
-    KISSY.use('overlay,gallery/aop/1.0/', function(S, Overlay, Do) {
+    KISSY.use('overlay,gallery/aop/1.1/', function(S, Overlay, Do) {
         
         var popup = {
             show: function() {
